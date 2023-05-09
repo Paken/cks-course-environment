@@ -179,6 +179,48 @@ tar xzf ${ETCDCTL_VERSION_FULL}.tar.gz ${ETCDCTL_VERSION_FULL}/etcdctl
 mv ${ETCDCTL_VERSION_FULL}/etcdctl /usr/bin/
 rm -rf ${ETCDCTL_VERSION_FULL} ${ETCDCTL_VERSION_FULL}.tar.gz
 
+# kube-bench
+curl -L https://github.com/aquasecurity/kube-bench/releases/download/v0.6.13/kube-bench_0.6.13_linux_arm64.deb -o kube-bench_0.6.13_linux_arm64.deb
+sudo apt install ./kube-bench_0.6.13_linux_arm64.deb
+rm -rf ./kube-bench_0.6.13_linux_arm64.deb
+
+# kubesecsudo apt-get install -y seccompwget https://github.com/controlplaneio/kubesec/releases/download/v2.13.0/kubesec_linux_armv7.tar.gz
+mv kubesec /usr/bin
+rm -rf CHANGELOG.md LICENSE README.md kubesec_linux_armv7.tar.gz 
+
+# trivy
+wget https://github.com/aquasecurity/trivy/releases/download/v0.41.0/trivy_0.41.0_Linux-ARM64.deb
+sudo apt install ./trivy_0.41.0_Linux-ARM64.deb 
+rm -rf ./trivy_0.41.0_Linux-ARM64.deb 
+
+# falco
+tar -xvzf kubesec_linux_armv7.tar.gz curl -fsSL https://falco.org/repo/falcosecurity-packages.asc |   sudo gpg --dearmor -o /usr/share/keyrings/falco-archive-keyring.gpg
+sudo cat >>/etc/apt/sources.list.d/falcosecurity.list <<EOF
+deb [signed-by=/usr/share/keyrings/falco-archive-keyring.gpg] https://download.falco.org/packages/deb stable main
+EOF
+sudo apt-get update -y
+sudo apt install -y dkms make linux-headers-$(uname -r)
+sudo apt install -y clang llvm
+sudo apt-get install -y falco
+
+# sysdig
+sudo apt install gnupg software-properties-common curl -y && sudo apt install linux-headers-$(uname -r) -y
+curl -s https://s3.amazonaws.com/download.draios.com/DRAIOS-GPG-KEY.public | apt-key add -
+curl -s -o /etc/apt/sources.list.d/draios.list http://download.draios.com/stable/deb/draios.list
+sudo apt update -y
+sudo apt install sysdig -y
+sudo sysdig --version
+
+
+
+
+# apparmor
+sudo apt install -y apparmor-profiles
+
+# seccomp
+sudo apt-get install -y seccomp
+
+
 echo
 echo "### COMMAND TO ADD A WORKER NODE ###"
 kubeadm token create --print-join-command --ttl 0
